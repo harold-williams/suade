@@ -69,6 +69,28 @@ def create_app():
             
             query = f"SELECT AVG(totals) FROM (SELECT SUM(total_amount) AS totals FROM OrderLine JOIN Orders ON Orders.id = OrderLine.order_id WHERE DATE(Orders.created_at) = DATE(\"{date}\") GROUP BY order_id);"
             report.update(get_value(cursor, query, "order_total_avg"))
+            
+            query = f"SELECT AVG(discount_rate) FROM OrderLine JOIN Orders ON Orders.id = OrderLine.order_id WHERE DATE(Orders.created_at) = DATE(\"{date}\");"
+            report.update(get_value(cursor, query, "discount_rate_avg"))
+            
+            commissions = {}
+            query = f"SELECT SUM(total_amount*rate) FROM OrderLine JOIN Orders ON Orders.id = OrderLine.order_id JOIN VendorCommissions ON Orders.vendor_id = VendorCommissions.vendor_id AND DATE(VendorCommissions.date) = DATE(Orders.created_at) WHERE DATE(Orders.created_at) = DATE(\"{date}\");"
+            commissions.update(get_value(cursor, query, "total"))
+            
+            query = f"SELECT AVG(commissions) FROM (SELECT AVG(total_amount*rate) AS commissions FROM OrderLine JOIN Orders ON Orders.id = OrderLine.order_id JOIN VendorCommissions ON Orders.vendor_id = VendorCommissions.vendor_id AND DATE(VendorCommissions.date) = DATE(Orders.created_at) WHERE DATE(Orders.created_at) = DATE(\"{date}\") GROUP BY order_id);"
+            commissions.update(get_value(cursor, query, "order_average"))
+            
+            promotions = {}
+            
+            query = f"SELECT id FROM Promotion;"
+            cursor.execute(query)
+            promos = cursor.fetchall()
+            for promotion in promos:
+                query = f"SELECT SUM(total_amount*rate) FROM OrderLine JOIN Orders ON Orders.id = OrderLine.order_id JOIN VendorCommissions ON Orders.vendor_id = VendorCommissions.vendor_id AND DATE(VendorCommissions.date) = DATE(Orders.created_at) WHERE DATE(Orders.created_at) = DATE(\"{date}\") AND Orders.vendor_id = \"{int(promotion[0])}\";"
+                promotions.update(get_value(cursor, query, str(int(promotion[0])) ))
+            
+            commissions["promotions"] = promotions
+            report["commissions"] = commissions
                 
             return report
         else:
