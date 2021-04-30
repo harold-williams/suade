@@ -1,8 +1,17 @@
 import re
-from flask import Flask, request
+import sqlite3
+import os
+from flask import Flask, request, g
+from application.db import get_db
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
+    app.config.from_mapping(
+        DATABASE=os.path.join(app.root_path, 'db\\database.db')
+    )
+    
+    from . import db
+    db.init_app(app)
     
     @app.route("/", methods=['GET'])
     def home():
@@ -32,8 +41,31 @@ def create_app():
         valid_date = r'([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))'
         valid = re.search(valid_date, date)
         if valid:
+            
+            report = {}
             date = valid.string
-            return "Placeholder API"
+            db = get_db()
+            cursor = db.cursor()
+            
+            # The total number of customers that made an order that day.
+            query = f'SELECT COUNT( DISTINCT customer_id) FROM Orders WHERE DATE(Orders.created_at) = DATE(\"{date}\");'
+            cursor.execute(query)
+            num_customers = cursor.fetchall()[0][0]
+            if num_customers:
+                report["customers"] = num_customers
+            else:
+                report["customers"] = 0
+                
+            # The total number of items sold on that day.
+            query = f"SELECT COUNT(order_id) FROM OrderLine JOIN Orders ON Orders.id = OrderLine.order_id WHERE DATE(Orders.created_at) = DATE(\"{date}\");"
+            cursor.execute(query)
+            num_customers = cursor.fetchall()[0][0]
+            if num_customers:
+                report["items"] = num_customers
+            else:
+                report["items"] = 0
+                
+            return report
         else:
             return "Invalid Date</br>Format: YYYY-MM-DD"
         
