@@ -40,7 +40,7 @@ __commissions : order_average__ - The average amount of commissions per order fo
 
 __commissions : promotions : x__ The total amount of commissions earned per each promotion (__x__) that day.
 
-## Setup
+# Setup
 
 To Run the given project, simply clone the repository using:
 
@@ -54,10 +54,21 @@ Then, install all pip requirements:
 pip install -r requirements.txt
 ```
 
+Depending on your Operating System you will have to do the following:
+
+### Windows CMD
+```
+set FLASK_APP=application
+```
+### Linux/MacOs
+```
+export FLASK_APP=hello
+```
+
 Now you can run the server (__inside the cloned directory__) using:
 
 ```
 flask run
 ```
 
-It will be served at http://127.0.0.1:5000/
+It will be served at http://127.0.0.1:5000/ - The endpoint resides at http://localhost:5000/api/report
