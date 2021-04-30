@@ -70,7 +70,7 @@ set FLASK_APP=application
 ```
 ### Linux/MacOs
 ```
-export FLASK_APP=hello
+export FLASK_APP=application
 ```
 
 Now you can run the server (__inside the cloned directory__) using:
