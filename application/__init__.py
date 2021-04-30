@@ -64,9 +64,11 @@ def create_app():
             query = f"SELECT COUNT(order_id) FROM OrderLine JOIN Orders ON Orders.id = OrderLine.order_id WHERE DATE(Orders.created_at) = DATE(\"{date}\");"
             report.update(get_value(cursor, query, "items"))
             
+            query = f"SELECT SUM(full_price_amount - discounted_amount) FROM OrderLine JOIN Orders ON Orders.id = OrderLine.order_id WHERE discount_rate <> 0 AND DATE(Orders.created_at) = DATE(\"{date}\");"
+            report.update(get_value(cursor, query, "total_discount_amount"))
             
-
-                
+            query = f"SELECT AVG(totals) FROM (SELECT SUM(total_amount) AS totals FROM OrderLine JOIN Orders ON Orders.id = OrderLine.order_id WHERE DATE(Orders.created_at) = DATE(\"{date}\") GROUP BY order_id);"
+            report.update(get_value(cursor, query, "order_total_avg"))
                 
             return report
         else:
