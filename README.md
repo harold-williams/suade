@@ -1,6 +1,11 @@
 # Suade API Project
 
+1. [Endpoint Layout](#section-1)
+2. [Setup](#section-2)
+
+
 ## Endpoint Layout
+<a name="section-1"></a> 
 
 ### JSON
 An example layout of the response will be as follows:
@@ -40,8 +45,10 @@ __commissions : order_average__ - The average amount of commissions per order fo
 
 __commissions : promotions : x__ The total amount of commissions earned per each promotion (__x__) that day.
 
-## Setup
 
+
+## Setup
+<a name="section-2"></a> 
 To Run the given project, simply clone the repository using:
 
 ```
