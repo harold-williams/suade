@@ -4,6 +4,15 @@ import os
 from flask import Flask, request, g
 from application.db import get_db
 
+
+def get_value(cursor, query, value):
+    cursor.execute(query)
+    num_customers = cursor.fetchall()[0][0]
+    if num_customers:
+        return { value : num_customers}
+    else:
+        return { value : 0 }
+
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
@@ -49,21 +58,15 @@ def create_app():
             
             # The total number of customers that made an order that day.
             query = f'SELECT COUNT( DISTINCT customer_id) FROM Orders WHERE DATE(Orders.created_at) = DATE(\"{date}\");'
-            cursor.execute(query)
-            num_customers = cursor.fetchall()[0][0]
-            if num_customers:
-                report["customers"] = num_customers
-            else:
-                report["customers"] = 0
+            report.update(get_value(cursor, query, "customers"))
                 
             # The total number of items sold on that day.
             query = f"SELECT COUNT(order_id) FROM OrderLine JOIN Orders ON Orders.id = OrderLine.order_id WHERE DATE(Orders.created_at) = DATE(\"{date}\");"
-            cursor.execute(query)
-            num_customers = cursor.fetchall()[0][0]
-            if num_customers:
-                report["items"] = num_customers
-            else:
-                report["items"] = 0
+            report.update(get_value(cursor, query, "items"))
+            
+            
+
+                
                 
             return report
         else:
