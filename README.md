@@ -53,7 +53,12 @@ __commissions : promotions : x__ The total amount of commissions earned per each
 To Run the given project, simply clone the repository using:
 
 ```
-git clone https://github.com/harold-williams/suade.git DIRECTION_DIR 
+git clone https://github.com/harold-williams/suade.git DESTINATION_DIR 
+```
+Change directory into the newly created directory:
+
+```
+cd DESTINATION_DIR
 ```
 
 Then, install all pip requirements:
