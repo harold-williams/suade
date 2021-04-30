@@ -87,5 +87,7 @@ As advised I only spent the time designated on this task and would like to descr
 
 Created more test cases and done more manual calculations. I created my test cases by querying the SQL database, however would have liked to double check these myself manually checking the numbers to understand whether the precision was completely correct. I also would have liked to create more edge cases to check for errors.
 
-Refactored my code to be divided into smaller functions. I would have liked to make a report object and initialised it simple by passing it a date and a database. 
+Refactored my code to be divided into smaller functions. I would have liked to make a report object more polished and created smaller functions for the whole codebase to serpate out purposes. I would have also liked to add greater comments to explain different components in more depth.
+
+Finally, if the dataset was larger I could have used a database server or integrated SQLAlchemy into my program, however it wasn't necessary in order to complete the task, however could be done in future. I could have also added more setting configurations if needed.
 
